@@ -24,7 +24,7 @@ export const parseArtboard = (artboardItem, codeType, progressSlice, getProgress
   const d1 = new Date().valueOf();
   // console.log('解析图片开始：', d1, artboardItem.frame.width);
   const sliceSize = 750 === artboardItem.frame.width ? 4 : 2;
-  const sliceList = getImageLayers(artboardItem.layers, symbolInstanceIds, fontMap, symbolGroups, codeImageMap, rootPath, sliceSize);
+  const sliceList/**图片列表对象{ id: layer.id, imageLocalPath }*/ = getImageLayers(artboardItem.layers, symbolInstanceIds, fontMap, symbolGroups, codeImageMap, rootPath, sliceSize);
   // console.log('fontMap', fontMap);
   const d2 = new Date().valueOf();
   // console.log('解析图片结束：', d2-d1);
@@ -45,6 +45,7 @@ export const parseArtboard = (artboardItem, codeType, progressSlice, getProgress
   const d4 = new Date().valueOf();
   // console.log('symbol导出结束：', d4-d3);
 
+  // ** 合并图层
   const _mergeLayer = (layers) => {
     for (let i = 0; i < layers.length; i++) {
       if (symbolInstanceIds.indexOf(layers[i].do_objectID) > -1) {
@@ -273,6 +274,7 @@ export const parseArtboard = (artboardItem, codeType, progressSlice, getProgress
  */
 export const parseArtboardIterator = (artboardList, codeType, progressSlice, getProgress, rootPath) => new Promise((resolve, reject) => {
   const results = [];
+  //递归遍历画板 解析
   const _nextPromise = (index, _artboardList) => {
     if (parseDocument.isCancel) {
       reject();
